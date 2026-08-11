@@ -7,6 +7,7 @@ int my_strlen(char *str);
 void my_strcpy(char *dest, char *src);
 void my_strncpy(char *dest, char *src, int n);
 void *my_memcpy(void *dest, void *src, int n);
+void *my_memmove(void *dest, void *src, int n);
 
 // concatenate
 void my_strcat(char *dest, char *src);
@@ -71,6 +72,27 @@ void *my_memcpy(void *dest, void *src, int n) {
   while( i < n ) {
     x[i] = y[i];
     i++;
+  }
+  return x;
+}
+
+void *my_memmove(void *dest, void *src, int n) {
+  char *x = dest;
+  char *y = src;
+
+  if ( x < y ) {
+    int i = 0;
+    while( i < n ) {
+      x[i] = y[i];
+      i++;
+    }
+  }
+  if ( x > y ) {
+    int i = n - 1;
+    while( i >= 0 ) {
+      x[i] = y[i];
+      i--;
+    }
   }
   return x;
 }
