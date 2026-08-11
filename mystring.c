@@ -1,25 +1,32 @@
 #define NULL 0
 
-// int functions
+// length
 int my_strlen(char *str);
+
+// copy
+void my_strcpy(char *dest, char *src);
+void my_strncpy(char *dest, char *src, int n);
+void *my_memcpy(void *dest, void *src, int n);
+
+// concatenate
+void my_strcat(char *dest, char *src);
+void my_strncat(char *dest, char *src, int n);
+
+// compare
 int my_strcmp(char *a, char *b);
 int my_strncmp(char *a, char *b, int n);
 
-// void functions
-void my_strcpy(char *dest, char *src);
-void my_strncpy(char *dest, char *src, int n);
-void my_strcat(char *dest, char *src);
-void my_strncat(char *dest, char *src, int n);
-void *my_memcpy(void *dest, void *src, int n);
-
-// functions that return memory adress
+// search
 char* my_strchr(char *str, char c);
 char* my_strrchr(char *str, char c);
+char* my_strstr(char *str, char *c);
 
 int main() {
 
 	return 0;
 }
+
+// length
 
 int my_strlen(char *str) {
   int i;
@@ -33,6 +40,8 @@ int my_strlen(char *str) {
   return i;
 }
 
+// copy
+
 void my_strcpy(char *dest, char *src) {
   int i = 0;
   while(src[i] != '\0') {
@@ -42,6 +51,31 @@ void my_strcpy(char *dest, char *src) {
   dest[i] = '\0';
 
 }
+
+void my_strncpy(char *dest, char *src, int n) {
+  int i = 0;
+  while(src[i] != '\0' && i != n) {
+    dest[i] = src[i];
+    i++;
+  }
+  if (i < n) {
+    dest[i] = '\0';
+  }
+}
+
+void *my_memcpy(void *dest, void *src, int n) {
+  int i = 0;
+  char *x = dest;
+  char *y = src;
+
+  while( i < n ) {
+    x[i] = y[i];
+    i++;
+  }
+  return x;
+}
+
+// concatenate
 
 void my_strcat(char *dest, char *src) {
   int i = my_strlen(dest);
@@ -53,6 +87,19 @@ void my_strcat(char *dest, char *src) {
   }
   dest[i] = '\0';
 }
+
+void my_strncat(char *dest, char *src, int n) {
+  int i = my_strlen(dest);
+  int j = 0;
+  while( src[j] != '\0' && j != n) {
+    dest[i] = src[j];
+    i++;
+    j++;
+  }
+  dest[i] = '\0';
+}
+
+// compare
 
 int my_strcmp(char *a, char *b) {
   int i = 0;
@@ -89,6 +136,8 @@ int my_strncmp(char *a, char *b, int n) {
   return 1;
 }
 
+// search
+
 char* my_strchr(char *str, char c) {
   int i = 0;
   while (str[i] != c && str[i] != '\0') {
@@ -124,38 +173,4 @@ char* my_strstr(char *str, char *c) {
     }
   }
   return NULL;
-}
-
-void my_strncpy(char *dest, char *src, int n) {
-  int i = 0;
-  while(src[i] != '\0' && i != n) {
-    dest[i] = src[i];
-    i++;
-  }
-  if (i < n) {
-    dest[i] = '\0';
-  }
-}
-
-void my_strncat(char *dest, char *src, int n) {
-  int i = my_strlen(dest);
-  int j = 0;
-  while( src[j] != '\0' && j != n) {
-    dest[i] = src[j];
-    i++;
-    j++;
-  }
-  dest[i] = '\0';
-}
-
-void *my_memcpy(void *dest, void *src, int n) {
-  int i = 0;
-  char *x = dest;
-  char *y = src;
-
-  while( i < n ) {
-    x[i] = y[i];
-    i++;
-  }
-  return x;
 }
