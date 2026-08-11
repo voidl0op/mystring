@@ -8,6 +8,7 @@ void my_strcpy(char *dest, char *src);
 void my_strncpy(char *dest, char *src, int n);
 void *my_memcpy(void *dest, void *src, int n);
 void *my_memmove(void *dest, void *src, int n);
+int my_memset(void *dest, int value, int n);
 
 // concatenate
 void my_strcat(char *dest, char *src);
@@ -16,6 +17,7 @@ void my_strncat(char *dest, char *src, int n);
 // compare
 int my_strcmp(char *a, char *b);
 int my_strncmp(char *a, char *b, int n);
+int my_memcmp(void *a, void *b, int n);
 
 // search
 char* my_strchr(char *str, char c);
@@ -97,6 +99,10 @@ void *my_memmove(void *dest, void *src, int n) {
   return x;
 }
 
+int my_memset(void *dest, int value, int n) {
+
+}
+
 // concatenate
 
 void my_strcat(char *dest, char *src) {
@@ -155,6 +161,26 @@ int my_strncmp(char *a, char *b, int n) {
   int x = a[i] - b[i];
   if (x == 0) return 0;
   if (x < 0 ) return -1;
+  return 1;
+}
+
+int my_memcmp(void *a, void *b, int n) {
+  int i = 0;
+  char *x = a;
+  char *y = b;
+  while(  i != n ) {
+    if ( x[i] != y[i] ) {
+      int z = x[i]-y[i];
+      if (z == 0) return 0;
+      if (z < 0 ) return -1;
+      if (z > 0 ) return 1;
+    }
+    i++;
+  }
+  if ( i == n ) return 0;
+  int z = x[i] - y[i];
+  if (z == 0) return 0;
+  if (z < 0 ) return -1;
   return 1;
 }
 
