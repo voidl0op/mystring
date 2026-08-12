@@ -7,16 +7,13 @@ its behavior.
 
 ## Progress
 
-**11 of 22** functions from the ISO C `<string.h>` header are implemented.
-Excluding the three functions that are locale/errno-dependent and don't
-really fit this kind of exercise (`strcoll`, `strxfrm`, `strerror`), that's
-**11 of 19 (~58%)**.
+**19 of 19** implementable functions from the ISO C `<string.h>` header are
+done. Excluded on purpose: `strcoll`, `strxfrm`, `strerror` — they're
+locale/errno-dependent and don't really fit this kind of exercise.
 
 Implemented: `strlen`, `strcpy`, `strncpy`, `strcat`, `strncat`, `strcmp`,
-`strncmp`, `strchr`, `strrchr`, `strstr`, `memcpy`
-
-Remaining: `memmove`, `memcmp`, `memchr`, `memset`, `strspn`, `strcspn`,
-`strpbrk`, `strtok`
+`strncmp`, `strchr`, `strrchr`, `strstr`, `strcspn`, `strspn`, `strpbrk`,
+`strtok`, `memcpy`, `memmove`, `memcmp`, `memchr`, `memset`
 
 ## Setup
 
@@ -260,9 +257,7 @@ void *my_memcpy(void *dest, void *src, int n) {
 }
 ```
 
-## Remaining functions (not yet implemented)
-
-### `memmove`
+### `void *my_memmove(void *dest, void *src, int n)`
 
 **Concept:** the same raw-byte copy as `memcpy`, but safe when `src` and
 `dest` overlap in memory. A naive forward byte-by-byte copy can overwrite
@@ -271,50 +266,154 @@ has to detect the overlap direction and, when necessary, copy backward
 (from the end toward the start) instead of always copying forward from
 index `0`.
 
-### `memcmp`
+Compares the `dest` and `src` pointers directly to pick a direction. If
+`dest` starts before `src` (`x < y`), copying forward from index `0` is
+safe — each byte of `dest` written is always behind the `src` read
+position, so nothing gets clobbered before it's read. If `dest` starts
+after `src` (`x > y`), forward copying would overwrite the tail of `src`
+before reaching it, so the loop instead runs backward from `n - 1` down to
+`0`. If the two pointers are equal, neither branch runs — copying a region
+onto itself is a no-op.
+
+```c
+void *my_memmove(void *dest, void *src, int n) {
+  char *x = dest;
+  char *y = src;
+
+  if ( x < y ) {
+    int i = 0;
+    while( i < n ) {
+      x[i] = y[i];
+      i++;
+    }
+  }
+  if ( x > y ) {
+    int i = n - 1;
+    while( i >= 0 ) {
+      x[i] = y[i];
+      i--;
+    }
+  }
+  return x;
+}
+```
+
+### `int my_memcmp(void *a, void *b, int n)`
 
 **Concept:** compare two raw memory regions byte by byte, the `mem*`
 counterpart to `strcmp` — used when comparing data that isn't necessarily
 null-terminated text (e.g. binary buffers, structs), or when embedded
 `'\0'` bytes in the middle of the data shouldn't stop the comparison early.
 
-### `memchr`
+Same lockstep-comparison shape as `my_strncmp`, but with no `'\0'` check in
+the loop condition at all — it always walks exactly `n` bytes regardless of
+what values it finds, which is the whole point versus `strcmp`.
+
+### `char *my_memchr(void *str, int value, int n)`
 
 **Concept:** the `mem*` counterpart to `strchr` — find a byte's first
 occurrence within a fixed-length block of memory, rather than searching
 until a `'\0'` terminator. Useful for scanning binary data that may
 contain `'\0'` bytes that aren't meant to signal "end of data."
 
-### `memset`
+Scans exactly `n` bytes with a bounded `for` loop (no terminator check),
+returning a pointer to the first byte equal to `value`, or `NULL` if the
+whole block is scanned without a match.
+
+### `void *my_memset(void *dest, int value, int n)`
 
 **Concept:** fill a block of memory with a single repeated byte value —
 commonly used to zero out or initialize a buffer before use (e.g. clearing
 a `struct` or an array to a known state).
 
-### `strspn`
+Straightforward bounded loop: casts `dest` to `char *` and writes `value`
+into each of the `n` bytes. `value` is declared `int` (matching the real
+`memset` signature) but every write truncates it to a single byte, same as
+the standard function.
+
+### `int my_strspn(char *a, char *b)`
 
 **Concept:** measure how many *leading* characters of a string belong to a
 given set of "accepted" characters — answers "how long is the prefix made
 entirely of these characters?" (e.g. skipping leading whitespace or
 digits).
 
-### `strcspn`
+For each character of `a`, an inner loop checks it against every character
+of `b`, setting a `found` flag if there's a match. As soon as a character
+of `a` isn't found anywhere in `b`, that index is returned — it marks the
+end of the accepted-character prefix. If the whole of `a` matches, the
+loop finishes and `my_strlen(a)` is returned (the entire string is the
+prefix).
+
+### `int my_strcspn(char *a, char *b)`
 
 **Concept:** the inverse of `strspn` — measure how many leading characters
 of a string do *not* belong to a given set of "reject" characters, i.e.
 find the position of the first character that *is* in the set.
 
-### `strpbrk`
+Same double-loop shape as `strspn`, but inverted: it returns immediately
+the moment a character of `a` matches *any* character of `b`, since that's
+the first "rejected" character. If no character of `a` ever matches
+anything in `b`, the loop runs to completion and `my_strlen(a)` is
+returned.
+
+### `char *my_strpbrk(char *a, char *b)`
 
 **Concept:** find the first occurrence in a string of *any* character from
 a given set — like `strchr`, but searching for one of several possible
 characters at once instead of just one.
 
-### `strtok`
+Structurally identical to `strcspn`'s double loop, but returns a pointer
+(`&a[i]`) into `a` at the match instead of an index, and returns `NULL`
+instead of a length when nothing in `b` is ever found.
+
+### `char *my_strtok(char *str, char *delim)`
 
 **Concept:** split a string into a sequence of tokens separated by a set
-of delimiter characters, returning one token per call. The trickiest one
-of the remaining functions, because it has to remember *where it left off*
-between calls — real `strtok` does this with a hidden `static` pointer
-that persists across invocations, which also makes it not thread-safe and
+of delimiter characters, returning one token per call. The trickiest
+function here, because it has to remember *where it left off* between
+calls — real `strtok` does this with a hidden `static` pointer that
+persists across invocations, which also makes it not thread-safe and
 unable to tokenize two strings at once.
+
+`pos` is that hidden static pointer. Passing `NULL` as `str` tells the
+function to resume from `pos` instead of starting a fresh string — this is
+what makes repeated `my_strtok(NULL, delim)` calls work. If there's
+nowhere left to resume from (`pos` is `NULL`, or resuming lands right on a
+terminator), it reports "no more tokens" by returning `NULL`. Otherwise it
+scans forward for the first character that matches anything in `delim`:
+when found, that position is overwritten with `'\0'` to end the current
+token, `pos` is set to the character *just after* it so the next call
+picks up there, and a pointer to the start of the token (`str`) is
+returned. If the scan reaches the end of `str` without ever finding a
+delimiter, the remaining text is itself the final token — it's returned
+directly, and `pos` is reset to `NULL` so the following call correctly
+signals the end.
+
+```c
+char *my_strtok(char *str, char *delim) {
+  static char *pos = NULL;
+  int i = 0;
+  int j = 0;
+
+  if ( str == NULL ) {
+    str = pos;
+  }
+
+  if ( str == NULL || str[0] == '\0' ) {
+    return NULL;
+  }
+
+  for ( i ; i < my_strlen(str) ; i++) {
+    for ( j  = 0; j < my_strlen(delim) ; j++) {
+      if ( str[i] == delim[j] ) {
+        str[i] = '\0';
+        pos = &str[i + 1];
+        return str;
+      }
+    }
+  }
+  pos = NULL;
+  return str;
+}
+```
