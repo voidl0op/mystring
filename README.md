@@ -11,6 +11,8 @@ behavior.
   for all 19 functions.
 - `mystring.c` — the implementations, `#include`-ing `mystring.h`.
 
+![mystring.h prototypes](mystring.h.png)
+
 ## Progress
 
 **19 of 19** implementable functions from the ISO C `<string.h>` header are
