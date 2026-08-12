@@ -2,8 +2,8 @@
 
 // length
 
-int my_strlen(char *str) {
-  int i;
+size_t my_strlen(const char *str) {
+  size_t i;
 
   for ( i = 0; str[i] != '\0' ; i++) {
     if (str[i] == '\0') {
@@ -16,8 +16,8 @@ int my_strlen(char *str) {
 
 // copy
 
-void my_strcpy(char *dest, char *src) {
-  int i = 0;
+void my_strcpy(char *dest, const char *src) {
+  size_t i = 0;
   while(src[i] != '\0') {
     dest[i] = src[i];
     i++;
@@ -26,8 +26,8 @@ void my_strcpy(char *dest, char *src) {
 
 }
 
-void my_strncpy(char *dest, char *src, int n) {
-  int i = 0;
+void my_strncpy(char *dest, const char *src, size_t n) {
+  size_t i = 0;
   while(src[i] != '\0' && i != n) {
     dest[i] = src[i];
     i++;
@@ -37,10 +37,10 @@ void my_strncpy(char *dest, char *src, int n) {
   }
 }
 
-void *my_memcpy(void *dest, void *src, int n) {
-  int i = 0;
+void *my_memcpy(void *dest, const void *src, size_t n) {
+  size_t i = 0;
   char *x = dest;
-  char *y = src;
+  const char *y = src;
 
   while( i < n ) {
     x[i] = y[i];
@@ -49,30 +49,30 @@ void *my_memcpy(void *dest, void *src, int n) {
   return x;
 }
 
-void *my_memmove(void *dest, void *src, int n) {
+void *my_memmove(void *dest, const void *src, size_t n) {
   char *x = dest;
-  char *y = src;
+  const char *y = src;
 
   if ( x < y ) {
-    int i = 0;
+    size_t i = 0;
     while( i < n ) {
       x[i] = y[i];
       i++;
     }
   }
   if ( x > y ) {
-    int i = n - 1;
-    while( i >= 0 ) {
-      x[i] = y[i];
+    size_t i = n;
+    while( i > 0 ) {
       i--;
+      x[i] = y[i];
     }
   }
   return x;
 }
 
-void *my_memset(void *dest, int value, int n) {
+void *my_memset(void *dest, int value, size_t n) {
   char *x = dest;
-  for ( int i = 0; i < n; i++) {
+  for ( size_t i = 0; i < n; i++) {
     x[i] = value;
   }
   return x;
@@ -80,9 +80,9 @@ void *my_memset(void *dest, int value, int n) {
 
 // concatenate
 
-void my_strcat(char *dest, char *src) {
-  int i = my_strlen(dest);
-  int j = 0;
+void my_strcat(char *dest, const char *src) {
+  size_t i = my_strlen(dest);
+  size_t j = 0;
   while( src[j] != '\0') {
     dest[i] = src[j];
     i++;
@@ -91,9 +91,9 @@ void my_strcat(char *dest, char *src) {
   dest[i] = '\0';
 }
 
-void my_strncat(char *dest, char *src, int n) {
-  int i = my_strlen(dest);
-  int j = 0;
+void my_strncat(char *dest, const char *src, size_t n) {
+  size_t i = my_strlen(dest);
+  size_t j = 0;
   while( src[j] != '\0' && j < n) {
     dest[i] = src[j];
     i++;
@@ -104,8 +104,8 @@ void my_strncat(char *dest, char *src, int n) {
 
 // compare
 
-int my_strcmp(char *a, char *b) {
-  int i = 0;
+int my_strcmp(const char *a, const char *b) {
+  size_t i = 0;
   while( b[i] != '\0' && a[i] != '\0') {
     if ( a[i] != b[i] ) {
       int x = a[i]-b[i];
@@ -121,8 +121,8 @@ int my_strcmp(char *a, char *b) {
   return 1;
 }
 
-int my_strncmp(char *a, char *b, int n) {
-  int i = 0;
+int my_strncmp(const char *a, const char *b, size_t n) {
+  size_t i = 0;
   while( b[i] != '\0' && a[i] != '\0' && i != n ) {
     if ( a[i] != b[i] ) {
       int x = a[i]-b[i];
@@ -139,10 +139,10 @@ int my_strncmp(char *a, char *b, int n) {
   return 1;
 }
 
-int my_memcmp(void *a, void *b, int n) {
-  int i = 0;
-  char *x = a;
-  char *y = b;
+int my_memcmp(const void *a, const void *b, size_t n) {
+  size_t i = 0;
+  const char *x = a;
+  const char *y = b;
   while(  i != n ) {
     if ( x[i] != y[i] ) {
       int z = x[i]-y[i];
@@ -161,57 +161,56 @@ int my_memcmp(void *a, void *b, int n) {
 
 // search
 
-char* my_strchr(char *str, char c) {
-  int i = 0;
+char* my_strchr(const char *str, char c) {
+  size_t i = 0;
   while (str[i] != c && str[i] != '\0') {
     i++;
   }
   if (str[i] == c) {
-    return &str[i];
+    return (char *)&str[i];
   }
   return NULL;
 }
 
-char* my_strrchr(char *str, char c) {
-  int i = my_strlen(str);
-  while (i >= 0 && str[i] != c) {
-    i--;
-  }
-  if (i >= 0) {
-    return &str[i];
-  }
+char* my_strrchr(const char *str, char c) {
+  size_t i = my_strlen(str);
+  do {
+    if (str[i] == c) {
+      return (char *)&str[i];
+    }
+  } while (i-- != 0);
   return NULL;
 }
 
-char* my_strstr(char *str, char *c) {
-  int size = my_strlen(str);
+char* my_strstr(const char *str, const char *c) {
+  size_t size = my_strlen(str);
 
-  for (int i = 0; i < size; i++) {
-    int n = 0;
+  for (size_t i = 0; i < size; i++) {
+    size_t n = 0;
     while (str[i + n] == c[n] && str[i + n] != '\0' && c[n] != '\0') {
       n++;
     }
     if (c[n] == '\0') {
-      return &str[i];
+      return (char *)&str[i];
     }
   }
   return NULL;
 }
 
-char* my_memchr(void *str, int value, int n) {
-  char *x = str;
-  int i = 0;
+char* my_memchr(const void *str, int value, size_t n) {
+  const char *x = str;
+  size_t i = 0;
   for ( ; i < n; i++) {
     if( x[i] == value) {
-      return &x[i];
+      return (char *)&x[i];
     }
-  } 
-  return NULL; 
+  }
+  return NULL;
 }
 
-int my_strcspn( char *a, char *b) {
-  int i = 0;
-  int j = 0;
+size_t my_strcspn(const char *a, const char *b) {
+  size_t i = 0;
+  size_t j = 0;
   for ( ; i < my_strlen(a); i++) {
     for (j = 0; j < my_strlen(b); j++) {
       if ( a[i] == b[j]) {
@@ -222,9 +221,9 @@ int my_strcspn( char *a, char *b) {
   return my_strlen(a);
 }
 
-int my_strspn( char *a, char *b) {
-  int i = 0;
-  int j = 0;
+size_t my_strspn(const char *a, const char *b) {
+  size_t i = 0;
+  size_t j = 0;
   for ( ; i < my_strlen(a); i++) {
     int found = 0;
     for (j = 0; j < my_strlen(b); j++) {
@@ -238,13 +237,13 @@ int my_strspn( char *a, char *b) {
   return my_strlen(a);
 }
 
-char *my_strpbrk( char *a, char *b) {
-  int i = 0;
-  int j = 0;
+char *my_strpbrk(const char *a, const char *b) {
+  size_t i = 0;
+  size_t j = 0;
   for ( ; i < my_strlen(a); i++) {
     for (j = 0; j < my_strlen(b); j++) {
       if ( a[i] == b[j]) {
-        return &a[i];
+        return (char *)&a[i];
       }
     }
   }
@@ -253,10 +252,10 @@ char *my_strpbrk( char *a, char *b) {
 
 // tokenize
 
-char *my_strtok(char *str, char *delim) {
+char *my_strtok(char *str, const char *delim) {
   static char *pos = NULL;
-  int i = 0;
-  int j = 0;
+  size_t i = 0;
+  size_t j = 0;
 
   if ( str == NULL ) {
     str = pos;
