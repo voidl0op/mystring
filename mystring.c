@@ -23,6 +23,13 @@ int my_memcmp(void *a, void *b, int n);
 char* my_strchr(char *str, char c);
 char* my_strrchr(char *str, char c);
 char* my_strstr(char *str, char *c);
+char* my_memchr(void *str, int value, int n);
+int my_strcspn( char *a, char *b);
+int my_strspn( char *a, char *b);
+char* my_strpbrk(char *a, char *b);
+
+// tokenize
+char *my_strtok(char *str, char *delim);
 
 int main() {
 
@@ -225,4 +232,85 @@ char* my_strstr(char *str, char *c) {
     }
   }
   return NULL;
+}
+
+char* my_memchr(void *str, int value, int n) {
+  char *x = str;
+  int i = 0;
+  for (i; i < n; i++) {
+    if( x[i] == value) {
+      return &x[i];
+    }
+  } 
+  return NULL; 
+}
+
+int my_strcspn( char *a, char *b) {
+  int i = 0;
+  int j = 0;
+  for( i; i < my_strlen(a); i++) {
+    for (j = 0; j < my_strlen(b); j++) {
+      if ( a[i] == b[j]) {
+        return i;
+      }
+    }
+  }
+  return my_strlen(a);
+}
+
+int my_strspn( char *a, char *b) {
+  int i = 0;
+  int j = 0;
+  for( i; i < my_strlen(a); i++) {
+    int found = 0;
+    for (j = 0; j < my_strlen(b); j++) {
+      if ( a[i] == b[j]) {
+        found = 1;
+        break;
+      }
+    }
+    if ( found == 0) return i;
+  }
+  return my_strlen(a);
+}
+
+char *my_strpbrk( char *a, char *b) {
+  int i = 0;
+  int j = 0;
+  for( i; i < my_strlen(a); i++) {
+    for (j = 0; j < my_strlen(b); j++) {
+      if ( a[i] == b[j]) {
+        return &a[i];
+      }
+    }
+  }
+  return NULL;
+}
+
+// tokenize
+
+char *my_strtok(char *str, char *delim) {
+  static char *pos = NULL;
+  int i = 0;
+  int j = 0;
+
+  if ( str == NULL ) {
+    str = pos;
+  }
+
+  if ( str == NULL || str[0] == '\0' ) {
+    return NULL;
+  }
+
+  for ( i ; i < my_strlen(str) ; i++) {
+    for ( j  = 0; j < my_strlen(delim) ; j++) {
+      if ( str[i] == delim[j] ) {
+        str[i] = '\0';
+        pos = &str[i + 1];
+        return str;
+      }
+    }
+  }
+  pos = NULL;
+  return str;
 }
