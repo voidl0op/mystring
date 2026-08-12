@@ -1,40 +1,4 @@
-#define NULL 0
-
-// length
-int my_strlen(char *str);
-
-// copy
-void my_strcpy(char *dest, char *src);
-void my_strncpy(char *dest, char *src, int n);
-void *my_memcpy(void *dest, void *src, int n);
-void *my_memmove(void *dest, void *src, int n);
-void *my_memset(void *dest, int value, int n);
-
-// concatenate
-void my_strcat(char *dest, char *src);
-void my_strncat(char *dest, char *src, int n);
-
-// compare
-int my_strcmp(char *a, char *b);
-int my_strncmp(char *a, char *b, int n);
-int my_memcmp(void *a, void *b, int n);
-
-// search
-char* my_strchr(char *str, char c);
-char* my_strrchr(char *str, char c);
-char* my_strstr(char *str, char *c);
-char* my_memchr(void *str, int value, int n);
-int my_strcspn( char *a, char *b);
-int my_strspn( char *a, char *b);
-char* my_strpbrk(char *a, char *b);
-
-// tokenize
-char *my_strtok(char *str, char *delim);
-
-int main() {
-
-	return 0;
-}
+#include "mystring.h"
 
 // length
 
@@ -237,7 +201,7 @@ char* my_strstr(char *str, char *c) {
 char* my_memchr(void *str, int value, int n) {
   char *x = str;
   int i = 0;
-  for (i; i < n; i++) {
+  for ( ; i < n; i++) {
     if( x[i] == value) {
       return &x[i];
     }
@@ -248,7 +212,7 @@ char* my_memchr(void *str, int value, int n) {
 int my_strcspn( char *a, char *b) {
   int i = 0;
   int j = 0;
-  for( i; i < my_strlen(a); i++) {
+  for ( ; i < my_strlen(a); i++) {
     for (j = 0; j < my_strlen(b); j++) {
       if ( a[i] == b[j]) {
         return i;
@@ -261,7 +225,7 @@ int my_strcspn( char *a, char *b) {
 int my_strspn( char *a, char *b) {
   int i = 0;
   int j = 0;
-  for( i; i < my_strlen(a); i++) {
+  for ( ; i < my_strlen(a); i++) {
     int found = 0;
     for (j = 0; j < my_strlen(b); j++) {
       if ( a[i] == b[j]) {
@@ -277,7 +241,7 @@ int my_strspn( char *a, char *b) {
 char *my_strpbrk( char *a, char *b) {
   int i = 0;
   int j = 0;
-  for( i; i < my_strlen(a); i++) {
+  for ( ; i < my_strlen(a); i++) {
     for (j = 0; j < my_strlen(b); j++) {
       if ( a[i] == b[j]) {
         return &a[i];
@@ -302,7 +266,7 @@ char *my_strtok(char *str, char *delim) {
     return NULL;
   }
 
-  for ( i ; i < my_strlen(str) ; i++) {
+  for ( ; i < my_strlen(str) ; i++) {
     for ( j  = 0; j < my_strlen(delim) ; j++) {
       if ( str[i] == delim[j] ) {
         str[i] = '\0';
