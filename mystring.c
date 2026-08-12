@@ -8,7 +8,7 @@ void my_strcpy(char *dest, char *src);
 void my_strncpy(char *dest, char *src, int n);
 void *my_memcpy(void *dest, void *src, int n);
 void *my_memmove(void *dest, void *src, int n);
-int my_memset(void *dest, int value, int n);
+void *my_memset(void *dest, int value, int n);
 
 // concatenate
 void my_strcat(char *dest, char *src);
@@ -99,8 +99,12 @@ void *my_memmove(void *dest, void *src, int n) {
   return x;
 }
 
-int my_memset(void *dest, int value, int n) {
-
+void *my_memset(void *dest, int value, int n) {
+  char *x = dest;
+  for ( int i = 0; i < n; i++) {
+    x[i] = value;
+  }
+  return x;
 }
 
 // concatenate
@@ -119,7 +123,7 @@ void my_strcat(char *dest, char *src) {
 void my_strncat(char *dest, char *src, int n) {
   int i = my_strlen(dest);
   int j = 0;
-  while( src[j] != '\0' && j != n) {
+  while( src[j] != '\0' && j < n) {
     dest[i] = src[j];
     i++;
     j++;
