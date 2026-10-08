@@ -1,8 +1,7 @@
 # mystring
 
-A from-scratch reimplementation of `<string.h>` in raw C — no standard library
-includes, not even for `NULL` (it's defined by hand in `mystring.h`). The
-goal is to rebuild the mental model behind each function, not just match its
+A from-scratch reimplementation of `<string.h>` in raw C, no standard library
+included . The goal is to rebuild the mental model behind each function, not just match its
 behavior.
 
 ## Files
